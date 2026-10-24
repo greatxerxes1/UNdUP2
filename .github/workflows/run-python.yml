@@ -1,13 +1,16 @@
-name: Build Python to EXE
+name: Build and Release EXE
 
 on:
   push:
     branches: [ "main" ]
   workflow_dispatch:
 
+permissions:
+  contents: write # 👈 این دسترسی برای ایجاد ریلیز در اکانت شما ضروری است
+
 jobs:
   build:
-    runs-on: windows-latest # 👈 استفاده از سرور ویندوز برای ساخت فایل exe ویندوزی
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
     
@@ -24,10 +27,13 @@ jobs:
         
     - name: Build EXE with PyInstaller
       run: |
-        pyinstaller --onefile main.py # 👈 تبدیل اسکریپت به یک فایل تک‌فایله EXE
+        pyinstaller --onefile --name "UNdUP2_Tool" main.py # 👈 نام فایل خروجی را اینجا مشخص کردیم
         
-    - name: Upload EXE Artifact
-      uses: actions/upload-artifact@v4
+    - name: Create GitHub Release
+      uses: ncipollo/release-action@v1
       with:
-        name: My-Windows-Executable
-        path: dist/main.exe
+        artifacts: "dist/UNdUP2_Tool.exe"
+        tag: "v1.0.${{ github.run_number }}" # هر بار یک نسخه جدید (مثلا v1.0.1) می‌سازد
+        name: "Release v1.0.${{ github.run_number }}"
+        body: "این فایل exe به صورت خودکار توسط گیت‌هاب اکشنز کامپایل شده است."
+        token: ${{ secrets.GITHUB_TOKEN }}
