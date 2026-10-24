@@ -1,15 +1,13 @@
-name: Run Python Project
+name: Build Python to EXE
 
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-  workflow_dispatch: # 👈 این خط بسیار مهم است! به شما اجازه می‌دهد خودتان دستی دکمه اجرا را بزنید.
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest # 👈 استفاده از سرور ویندوز برای ساخت فایل exe ویندوزی
     steps:
     - uses: actions/checkout@v4
     
@@ -21,9 +19,15 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install lief # 👈 این خط را اضافه کنید تا کتابخانه LIEF نصب شود
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install lief pyinstaller
+        if (Test-Path requirements.txt) { pip install -r requirements.txt }
         
-    - name: Run script
+    - name: Build EXE with PyInstaller
       run: |
-        python main.py "UNdUP2.exe" # 👈 مسیر فایل را اینجا اضافه کنید
+        pyinstaller --onefile main.py # 👈 تبدیل اسکریپت به یک فایل تک‌فایله EXE
+        
+    - name: Upload EXE Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: My-Windows-Executable
+        path: dist/main.exe
