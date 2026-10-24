@@ -26,4 +26,4 @@ jobs:
         
     - name: Run script
       run: |
-        python main.py # 👈 نام فایل اصلی پروژه خود را اینجا بنویسید
+        python main.py "نام_فایل_شما" # 👈 مسیر فایل را اینجا اضافه کنید
