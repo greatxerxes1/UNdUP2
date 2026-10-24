@@ -26,4 +26,4 @@ jobs:
         
     - name: Run script
       run: |
-        python main.py "UNdUP2" # 👈 مسیر فایل را اینجا اضافه کنید
+        python main.py "UNdUP2.exe" # 👈 مسیر فایل را اینجا اضافه کنید
